@@ -17,8 +17,8 @@ const Header = () => {
     if (storedUser) {
       try {
         setUser(JSON.parse(storedUser));
-      } catch (e) {
-        console.error('Invalid user data in localStorage');
+      } catch (err) {
+        console.error(`Invalid user data in localStorage. ${err}`);
         localStorage.removeItem('user');
         setUser(null);
       }
@@ -44,7 +44,7 @@ const Header = () => {
           const data = await fetchCart();
           setCartItems(data);
         } catch (err) {
-          console.error('Gagal muat keranjang');
+          console.error(`Gagal muat keranjang. ${err}`);          
         }
       };
       loadCart();
@@ -60,7 +60,7 @@ const Header = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    setUser(null); // ✅ ini yang penting!
+    setUser(null);
     setCartItems([]);
     navigate('/');
   };

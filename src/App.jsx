@@ -9,6 +9,7 @@ import AdminLogin from './pages/auth/AdminLogin';
 import AdminPage from './pages/admin/AdminPage';
 import LoginPage from './pages/auth/LoginPage';
 import PaymentPage from './components/PaymentPage';
+import Test from './test/test';
 
 const App = () => {
   return (
@@ -24,6 +25,8 @@ const App = () => {
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/login" element={<LoginPage />} />
+
+            <Route path='test' element={<Test />} />
           </Routes>
         </main>
         <Footer />

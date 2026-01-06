@@ -23,7 +23,7 @@ const AdminPage = () => {
       return;
     }
     loadFruits();
-  }, []);
+  }, [navigate]);
 
   const loadFruits = async () => {
     const res = await fetch("http://localhost:3000/api/fruits");
@@ -31,7 +31,7 @@ const AdminPage = () => {
     setFruits(data);
   };
 
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -74,7 +74,8 @@ const AdminPage = () => {
         description: "",
       });
     } catch (err) {
-      alert("Failed to save fruit");
+      alert(`Failed to save fruit ${err}`);
+      console.error(err);
     }
   };
 
@@ -131,7 +132,7 @@ const AdminPage = () => {
             name="name"
             placeholder="Name"
             value={formData.name}
-            onChange={handleInputChange}
+            onChange={handleChange}
             required
             className="p-2 border rounded"
           />
@@ -141,7 +142,7 @@ const AdminPage = () => {
             type="number"
             step="0.01"
             value={formData.price}
-            onChange={handleInputChange}
+            onChange={handleChange}
             required
             className="p-2 border rounded"
           />
@@ -151,14 +152,14 @@ const AdminPage = () => {
             type="number"
             step="0.01"
             value={formData.original_price}
-            onChange={handleInputChange}
+            onChange={handleChange}
             className="p-2 border rounded"
           />
           <input
             name="image"
             placeholder="Image URL"
             value={formData.image}
-            onChange={handleInputChange}
+            onChange={handleChange}
             required
             className="p-2 border rounded"
           />
@@ -170,7 +171,7 @@ const AdminPage = () => {
             min="0"
             max="5"
             value={formData.rating}
-            onChange={handleInputChange}
+            onChange={handleChange}
             required
             className="p-2 border rounded"
           />
@@ -179,7 +180,7 @@ const AdminPage = () => {
             placeholder="Reviews"
             type="number"
             value={formData.reviews}
-            onChange={handleInputChange}
+            onChange={handleChange}
             required
             className="p-2 border rounded"
           />
@@ -187,7 +188,7 @@ const AdminPage = () => {
             name="category"
             placeholder="Category"
             value={formData.category}
-            onChange={handleInputChange}
+            onChange={handleChange}
             required
             className="p-2 border rounded"
           />
@@ -196,7 +197,7 @@ const AdminPage = () => {
               name="description"
               placeholder="Description"
               value={formData.description}
-              onChange={handleInputChange}
+              onChange={handleChange}
               required
               className="w-full p-2 border rounded"
               rows="3"
