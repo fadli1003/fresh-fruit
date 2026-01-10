@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { ShoppingCart } from 'lucide-react';
 import CartItem from './CartItem';
 import CartSummary from './CartSummary';
-import { fetchCart, updateCartItem, removeFromCart, checkout } from '../utils/api';
+import { fetchCart, updateCartItem, removeFromCart, checkout } from '../utils/api2';
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -18,9 +18,10 @@ const CartPage = () => {
   const loadCart = async () => {
     try {
       const data = await fetchCart();
+      // console.log(data)
       setCartItems(data);
     } catch (err) {
-      toast.error('Failed to load cart');
+      toast.error('Failed to load cart', err.message);
     } finally {
       setLoading(false);
     }
@@ -31,11 +32,28 @@ const CartPage = () => {
       await handleRemove(id);
       return;
     }
+     // 1. Simpan data lama untuk backup jika API gagal
+    const previousCart = [...cartItems];
+
+    // 2. Optimistic Update (Update UI secara instan)
+    setCartItems(prev => 
+      prev.map(item => item.id === id ? { ...item, quantity: newQuantity } : item)
+    );
+
     try {
-      const updated = await updateCartItem(id, newQuantity);
-      setCartItems(updated);
+      // const updated = await updateCartItem(id, newQuantity);
+      // setCartItems(updated);
+      const response = await updateCartItem(id, newQuantity);
+
+      if (Array.isArray(response)) {
+        setCartItems(response);
+      } else if (response && Array.isArray(response.cart)) {
+        setCartItems(response.cart);
+      }
     } catch (err) {
-      toast.error('Failed to update quantity');
+      //rollback jika gagal
+      setCartItems(previousCart);
+      toast.error('Failed to update quantity', err.message);
     }
   };
 
@@ -45,7 +63,7 @@ const CartPage = () => {
       setCartItems(result.cart);
       toast.success('Item removed');
     } catch (err) {
-      toast.error('Failed to remove item');
+      toast.error('Failed to remove item', err.message);
     }
   };
 
@@ -93,7 +111,15 @@ const CartPage = () => {
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              {cartItems.map((item) => (
+              {/* {cartItems.map((item) => (
+                <CartItem
+                  key={item.id}
+                  item={item}
+                  updateQuantity={handleUpdateQuantity}
+                  removeFromCart={() => handleRemove(item.id)}
+                />
+              ))} */}
+              {Array.isArray(cartItems) && cartItems.map((item) => (
                 <CartItem
                   key={item.id}
                   item={item}

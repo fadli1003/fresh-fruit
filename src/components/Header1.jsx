@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
-import { fetchCart } from "../utils/api2";
-import { useNavigate } from "react-router-dom";
-import { Leaf, UserRound } from 'lucide-react';
-
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ShoppingCart, Menu, X, User, LogOut } from 'lucide-react';
+import { fetchCart } from '../utils/api2';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -10,14 +9,15 @@ const Header = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
+  // 💡 Fungsi untuk load user dari localStorage
   const loadUser = () => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       try {
         setUser(JSON.parse(storedUser));
       } catch (err) {
+        console.error(`Invalid user data in localStorage. ${err}`);
         localStorage.removeItem('user');
-        console.error(err)
         setUser(null);
       }
     } else {
@@ -25,37 +25,34 @@ const Header = () => {
     }
   };
 
+  // 🔁 Load user saat komponen mount & setiap ada perubahan di localStorage
   useEffect(() => {
     loadUser();
-    
-    window.addEventListener('authChange', loadUser);
-    window.addEventListener('storage', loadUser);
 
-    return () => {
-      window.removeEventListener('authChange', loadUser);
-      window.removeEventListener('storage', loadUser);
-    };
+    // Opsional: dengarkan perubahan di tab lain
+    window.addEventListener('storage', loadUser);
+    return () => window.removeEventListener('storage', loadUser);
   }, []);
 
+  // Load cart hanya jika user ada
   useEffect(() => {
     if (user) {
-      const loadCartData = async () => {
+      const loadCart = async () => {
         try {
           const data = await fetchCart();
-          // Cek apakah data itu array (biar gak crash .reduce nanti)
-          setCartItems(Array.isArray(data) ? data : []);
+          setCartItems(data);
         } catch (err) {
-          console.error("Gagal muat keranjang", err);
+          console.error(`Gagal muat keranjang. ${err}`);          
         }
       };
-      loadCartData();
+      loadCart();
     } else {
       setCartItems([]);
     }
   }, [user]);
 
   const getTotalItems = () => {
-    return cartItems.reduce((total, item) => total + (item.quantity || 0), 0);
+    return cartItems.reduce((total, item) => total + item.quantity, 0);
   };
 
   const handleLogout = () => {
@@ -63,7 +60,6 @@ const Header = () => {
     localStorage.removeItem('user');
     setUser(null);
     setCartItems([]);
-    window.dispatchEvent(new Event('authChange')); 
     navigate('/');
   };
 
@@ -120,7 +116,7 @@ const Header = () => {
                 onClick={() => navigate('/login')}
                 className="flex items-center space-x-1 text-green-600 hover:text-green-800 font-medium"
               >
-                <UserRound className="w-5 h-5" />
+                <User className="w-5 h-5" />
                 <span>Login</span>
               </button>
             )}            
@@ -167,6 +163,7 @@ const Header = () => {
       </div>
     </header>
   );
-}
+};
 
-export default Header
+import { Leaf } from 'lucide-react';
+export default Header;

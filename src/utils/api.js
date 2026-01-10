@@ -1,4 +1,5 @@
 const API_BASE = 'http://localhost:3000/api';
+// const API_BASE = process.env.API_BASE;
 
 export const checkout = (data) =>
   fetch(`${API_BASE}/checkout`, {
@@ -18,7 +19,7 @@ export const removeFromCart = (id) =>
   fetch(`${API_BASE}/cart/${id}`, { method: 'DELETE' }).then(r => r.json());
 
 export const fetchFruits = () => 
-  fetch('http://localhost:3000/api/fruits')
+  fetch(`${API_BASE}/fruits`)
     .then(res => res.json())
     .then(data => data.map(fruit => ({
       ...fruit,
@@ -26,19 +27,18 @@ export const fetchFruits = () =>
       original_price: fruit.original_price ? parseFloat(fruit.original_price) : null
     })));
 
-
 const getAuthHeader = () => {
   const token = localStorage.getItem('token');
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
 export const fetchCart = () => 
-  fetch('http://localhost:3000/api/cart', {
+  fetch(`${API_BASE}/cart`, {
     headers: getAuthHeader()
   }).then(r => r.json());
 
 export const addToCart = (item) =>
-  fetch('http://localhost:3000/api/cart', {
+  fetch(`${API_BASE}/cart`, {
     method: 'POST',
     headers: { 
       'Content-Type': 'application/json',
