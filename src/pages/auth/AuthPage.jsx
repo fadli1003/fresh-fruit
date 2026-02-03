@@ -10,43 +10,11 @@ const LoginPage = () => {
 	const [error, setError] = useState('');
 	const navigate = useNavigate();
 
-	// const handleSubmit = async (e) => {
-	//     e.preventDefault();
-	//     setError('');
-
-	//     try {
-	//         const url = isLogin
-	//             ? 'http://localhost:3000/api/auth/login'
-	//             : 'http://localhost:3000/api/auth/register';
-
-	//         const res = await fetch(url, {
-	//             method: 'POST',
-	//             headers: { 'Content-Type': 'application/json' },
-	//             body: JSON.stringify(isLogin ? { email, password } : { name, email, password })
-	//         });
-
-	//         const data = await res.json();
-	//         // added recently
-	//         window.dispatchEvent(new Event('authChange'));
-	//         if (res.ok) {
-	//             localStorage.setItem('token', data.token);
-	//             localStorage.setItem('user', JSON.stringify(data.user));
-	//             navigate('/');
-	//         } else {
-	//             setError(data.error || 'Authentication failed');
-	//         }
-	//     } catch (err)
-	//     // (err)
-	//     {
-	//         setError('Network error');
-	//         console.error(err)
-	//     }
-	// };
-
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setError('');
-        const baseUrl = import.meta.env.VITE_API_BASE_URL
+    const baseUrl = import.meta.env.VITE_API_BASE_URL
+		
 		try {
 			const url = isLogin
 				? `${baseUrl}/auth/login`
@@ -63,9 +31,7 @@ const LoginPage = () => {
 			window.dispatchEvent(new Event('authChange'));
 			navigate('/');
 		} catch (err) {
-			// 6. Penanganan Error Axios lebih rapi
 			if (err.response) {
-				// Error dari server (misal: 400, 401, 500)
 				setError(err.response.data.error || 'Authentication failed');
 			} else if (err.request) {
 				// Server tidak merespon (Network error)

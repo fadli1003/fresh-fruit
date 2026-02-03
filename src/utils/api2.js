@@ -2,7 +2,6 @@ import axios from 'axios';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL
 
-// 1. Buat Instance Axios
 const api = axios.create({
   baseURL: API_BASE,
   headers: {
@@ -19,8 +18,6 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
-
-// --- API Functions ---
 
 export const fetchFruits = async () => {
   const response = await api.get('/fruits');
@@ -43,8 +40,6 @@ export const addToCart = async (item) => {
 };
 
 export const updateCartItem = async (id, quantity) => {
-  // Masalah "Unauthorized" Anda sebelumnya mungkin karena lupa getAuthHeader di sini
-  // Sekarang sudah ditangani otomatis oleh interceptor di atas
   const response = await api.put(`/cart/${id}`, { quantity });
   return response.data;
 };

@@ -7,7 +7,7 @@ import CartPage from './components/CartPage';
 import CheckoutPage from './components/CheckoutPage';
 import AdminLogin from './pages/auth/AdminLogin';
 import AdminPage from './pages/admin/AdminPage';
-import LoginPage from './pages/auth/LoginPage';
+import AuthPage from './pages/auth/AuthPage';
 import PaymentPage from './components/PaymentPage';
 import Test from './test/test';
 
@@ -18,7 +18,7 @@ const App = () => {
         <Header />
         <main className="container mx-auto px-4 py-8 flex-grow">
           <Routes>
-            <Route path="/login" element={<LoginPage />} />
+            <Route path="/login" element={<AuthPage />} />
             
             <Route path="/" element={<ShopPage />} />
             <Route path="/cart" element={<CartPage />} />
